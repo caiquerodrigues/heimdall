@@ -4,15 +4,13 @@ ruby '2.3.3'
 # Database
 gem 'mongoid', '>= 3.0.0'
 
-# JSON
+# Components
 gem 'oj'
 gem 'jwt'
-
-# Project and Components
+gem 'bcrypt'
 gem 'rake'
 gem 'puma'
 gem 'rack-cors', :require => 'rack/cors'
-
 
 group :development, :test do
   gem 'pry'
