@@ -3,6 +3,14 @@
 ## Description
 Heimdall aims to implements JSON Web Token (JWT) and provides AAAS (Authentication As A Service) for multiple applications management and also other cool features such as single sign-on.
 
+## TODO
+- Update Account
+- Delete Account
+- Register Applications
+- One Application has many Accounts
+- Encrypt results with JWT (for retrieving sensible informations)
+- Accounts has and belongs to many Applications (for Single Sign On)
+
 ## HOW TO
 ### Shipping with Docker
 - Install [Docker](https://www.docker.com) and [Docker Compose](https://docs.docker.com/compose/)
