@@ -1,0 +1,22 @@
+version: '2'
+services:
+  heimdall.mongodb.local:
+    container_name: heimdall-mongodb
+    image: mongo:3.4.1
+    ports:
+      - 27017:27017
+
+  heimdall.api.local:
+    container_name: heimdall-api
+    build: .
+    command: bundle exec padrino s -h 0.0.0.0
+    volumes:
+      - .:/app
+    ports:
+      - 3000:3000
+    links:
+      - heimdall.mongodb.local
+    depends_on:
+      - heimdall.mongodb.local
+    env_file:
+      - ./heimdall.env
