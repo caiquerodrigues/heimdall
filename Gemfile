@@ -23,6 +23,7 @@ group :test do
   gem 'shoulda-matchers'
   gem 'json_matchers'
   gem 'factory_girl'
+  gem 'database_cleaner'
 end
 
 # Padrino
