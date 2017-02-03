@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Controller' do
+  let(:account) { create(:account, :full) }
+
   describe 'GET#status' do
     before do
       get '/status'
@@ -22,9 +24,7 @@ RSpec.describe 'Controller' do
   describe 'GET#auth' do
     context 'with valid parameters' do
       before do
-        allow(Account).to receive(:authenticate).and_return(true)
-
-        get '/auth?email=admin@heimdall.local&password=goodpwd'
+        get '/auth', email: account.email, password: account.password
       end
 
       subject do
@@ -44,9 +44,7 @@ RSpec.describe 'Controller' do
   describe 'GET#auth' do
     context 'with invalid parameters' do
       before do
-        allow(Account).to receive(:authenticate).and_return(false)
-
-        get '/auth?email=admin@heimdall.local&password=badpwd'
+        get '/auth', email: account.email, password: 'badpassword'
       end
 
       subject do
@@ -63,34 +61,36 @@ RSpec.describe 'Controller' do
     end
   end
 
-  # describe 'POST#create_account' do
-  #   context 'with valid parameters' do
-  #     let(:account_as_json) do
-  #       {
-  #         account: {
-  #           name: 'Admin',
-  #           surname: 'Heimdall',
-  #           email: 'admin@heimdall.local',
-  #           password: 'good',
-  #           password_confirmation: 'good',
-  #           role: 'admin'
-  #         }
-  #       }
-  #     end
-  #
-  #     before do
-  #       allow(Account).to receive(:new).with(any_args).and_return( account)
-  #       allow_any_instance_of(Account).to receive(:save).and_return(true)
-  #       post '/account/create', account_as_json
-  #     end
-  #
-  #     it 'returns successful creation' do
-  #       expect(last_response.body).to eq 'Account was created!'
-  #     end
-  #
-  #     it 'returns status 200' do
-  #       expect(last_response.status).to eq 200
-  #     end
-  #   end
-  # end
+  describe 'POST#create_account' do
+    context 'with valid parameters' do
+      let(:account_params) do
+        {
+          account: {
+            name: 'Heimdall',
+            surname: 'API',
+            email: 'iamheimdall@local.com',
+            password: 'bitfrost',
+            password_confirmation: 'bitfrost',
+            role: 'admin'
+          }
+        }
+      end
+
+      before do
+        post '/account/create', account_params
+      end
+
+      subject do
+        Oj.load(last_response.body)[:message]
+      end
+
+      it 'returns successful creation' do
+        expect(subject).to eq 'Account was created!'
+      end
+
+      it 'returns status 200' do
+        expect(last_response.status).to eq 200
+      end
+    end
+  end
 end
