@@ -6,8 +6,12 @@ RSpec.describe 'Controller' do
       get '/status'
     end
 
+    subject do
+      Oj.load(last_response.body)[:message]
+    end
+
     it 'returns good message' do
-      expect(last_response.body).to eq 'Bifrost bridge is up and running!'
+      expect(subject).to eq 'Bifrost bridge is up and running!'
     end
 
     it 'returns status 200' do
@@ -23,8 +27,12 @@ RSpec.describe 'Controller' do
         get '/auth?email=admin@heimdall.local&password=goodpwd'
       end
 
+      subject do
+        Oj.load(last_response.body)[:message]
+      end
+
       it 'returns successful authentication' do
-        expect(last_response.body).to eq 'Authentication was successful!'
+        expect(subject).to eq 'Authentication was successful!'
       end
 
       it 'returns status 200' do
@@ -41,8 +49,12 @@ RSpec.describe 'Controller' do
         get '/auth?email=admin@heimdall.local&password=badpwd'
       end
 
+      subject do
+        Oj.load(last_response.body)[:message]
+      end
+
       it 'returns successful authentication' do
-        expect(last_response.body).to eq 'Authentication error!'
+        expect(subject).to eq 'Authentication error!'
       end
 
       it 'returns status 401' do
