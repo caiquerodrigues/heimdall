@@ -1,6 +1,6 @@
 Heimdall::App.controllers  do
 
-  before :create_account do
+  before except: :status do
     @account_params = payload('account').extract!('name',
                                                   'surname',
                                                   'email',
@@ -13,8 +13,8 @@ Heimdall::App.controllers  do
     render_message 'Bifrost bridge is up and running!'
   end
 
-  get :authenticate, map: '/auth', provides: :json do
-    account_authenticated = Account.authenticate(params[:email], params[:password])
+  post :authenticate, map: '/auth', provides: :json do
+    account_authenticated = Account.authenticate(@account_params['email'], @account_params['password'])
     halt 401, render_message('Authentication error!') unless account_authenticated
     render_message 'Authentication was successful!'
   end

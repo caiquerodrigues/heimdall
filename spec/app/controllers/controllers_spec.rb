@@ -21,10 +21,19 @@ RSpec.describe 'Controller' do
     end
   end
 
-  describe 'GET#auth' do
+  describe 'POST#auth' do
     context 'with valid parameters' do
+      let(:account_params) do
+        {
+          account: {
+            email: account.email,
+            password: account.password,
+          }
+        }
+      end
+
       before do
-        get '/auth', email: account.email, password: account.password
+        post '/auth', account_params
       end
 
       subject do
@@ -41,10 +50,19 @@ RSpec.describe 'Controller' do
     end
   end
 
-  describe 'GET#auth' do
+  describe 'POST#auth' do
     context 'with invalid parameters' do
+      let(:account_params) do
+        {
+          account: {
+            email: account.email,
+            password: 'badpassword',
+          }
+        }
+      end
+
       before do
-        get '/auth', email: account.email, password: 'badpassword'
+        post '/auth', account_params
       end
 
       subject do
