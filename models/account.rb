@@ -1,5 +1,6 @@
 class Account
   include Mongoid::Document
+
   attr_accessor :password, :password_confirmation
 
   # Fields
@@ -40,6 +41,13 @@ class Account
 
   def has_password?(password)
     ::BCrypt::Password.new(crypted_password) == password
+  end
+
+  def as_payload
+    {
+      'email': self.email,
+      'app': 'heimdall'
+    }
   end
 
   private

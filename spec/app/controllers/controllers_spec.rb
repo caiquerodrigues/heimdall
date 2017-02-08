@@ -8,6 +8,10 @@ RSpec.describe 'Controller' do
       get '/status'
     end
 
+    after do
+      clear_cookies
+    end
+
     subject do
       Oj.load(last_response.body)[:message]
     end
@@ -46,6 +50,11 @@ RSpec.describe 'Controller' do
 
       it 'returns status 200' do
         expect(last_response.status).to eq 200
+      end
+
+      it 'sets HEIMDALL_AUTH cookie' do
+        require 'pry'; binding.pry
+        expect(last_response.headers['Set-Cookie'].include?('HEIMDALL_AUTH'))
       end
     end
   end

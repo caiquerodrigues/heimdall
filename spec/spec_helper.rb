@@ -1,7 +1,7 @@
 RACK_ENV = 'test' unless defined?(RACK_ENV)
 require File.expand_path(File.dirname(__FILE__) + "/../config/boot")
 require File.dirname(__FILE__) + "/factories"
-Dir[File.expand_path(File.dirname(__FILE__) + "/../app/helpers.rb")].each(&method(:require))
+Dir[File.expand_path(File.dirname(__FILE__) + "/../app/helpers/*")].each(&method(:require))
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods

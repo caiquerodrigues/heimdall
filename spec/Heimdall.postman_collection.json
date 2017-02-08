@@ -1,0 +1,85 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Heimdall",
+		"_postman_id": "cd3e019c-dedd-893a-a67d-fa35a7dc5ab7",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Valid AUTH",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Your test name\"] = jsonData.value === 100;",
+							"",
+							"tests[\"Body matches string\"] = responseBody.has(\"Authentication was successful!\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "localhost:3000/auth",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=UTF-8",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"account\" :\n\t{\n\t\t\"email\": \"admin@heimdall.local\",\n\t\t\"password\": \"123456\"\n\t}\n}"
+				},
+				"description": "Auth on local Heimdall using email and password."
+			},
+			"response": []
+		},
+		{
+			"name": "Valid CREATE USER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"tests[\"Your test name\"] = jsonData.value === 100;",
+							"",
+							"",
+							"",
+							"tests[\"Body matches string\"] = responseBody.has(\"Account was created!\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "localhost:3000/account/create",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=UTF-8",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"account\" :\n\t{\n\t\t\"name\": \"Admin\",\n\t\t\"surname\": \"Heimdall\",\n\t\t\"email\": \"admin@heimdall.local\",\n\t\t\"password\": \"123456\",\n\t\t\"password_confirmation\": \"123456\",\n\t\t\"role\": \"admin\"\n\t}\n}"
+				},
+				"description": "User creation through API using local Heimdall."
+			},
+			"response": []
+		}
+	]
+}

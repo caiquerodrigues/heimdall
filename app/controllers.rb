@@ -1,6 +1,6 @@
 Heimdall::App.controllers  do
 
-  before except: :status do
+  before :create_account, :authenticate do
     @account_params = payload('account').extract!('name',
                                                   'surname',
                                                   'email',
@@ -14,8 +14,12 @@ Heimdall::App.controllers  do
   end
 
   post :authenticate, map: '/auth', provides: :json do
+    # require 'pry'; binding.pry
     account_authenticated = Account.authenticate(@account_params['email'], @account_params['password'])
     halt 401, render_message('Authentication error!') unless account_authenticated
+
+    @response.set_cookie('HEIMDALL_AUTH', encode(account_authenticated.as_payload))
+
     render_message 'Authentication was successful!'
   end
 
