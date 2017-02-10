@@ -3,12 +3,18 @@
 ## Description
 Heimdall aims to implements JSON Web Token (JWT) and provides AAAS (Authentication As A Service) for multiple applications management and also other cool features such as single sign-on.
 
+## DONE
+- JWT token authorization
+- Status
+- Auth
+- Create account
+- Update account (without password)
+- Update password
+
 ## TODO
-- Update Account
 - Delete Account
 - Register Applications
 - One Application has many Accounts
-- Encrypt results with JWT (for retrieving sensible informations)
 - Accounts has and belongs to many Applications (for Single Sign On)
 
 ## HOW TO
