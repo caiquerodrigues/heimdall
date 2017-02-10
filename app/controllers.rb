@@ -41,11 +41,14 @@ Heimdall::App.controllers  do
   end
 
   put :update_account, map: '/account/update', provides: :json do
+    account = Account.find_by(email: @token['email']) if @token
+
+    halt 401, render_message('Not authorized') unless account
+
     @account_params.delete_if do |param, value|
       param =~ /password/
     end
 
-    account = Account.find_by(email: @token['email']) if @token
     halt 400, render_message('Problems updating account.') unless account.update(@account_params)
     render_message 'Account was updated!'
   end
@@ -53,10 +56,10 @@ Heimdall::App.controllers  do
   put :update_password, map: '/account/update_password', provides: :json do
     account_authenticated = Account.authenticate(@token['email'], @account_params['old_password']) if @token
 
-    halt 400, render_message('Problems updating account.') unless account_authenticated
+    halt 401, render_message('Not authorized') unless account_authenticated
 
     @account_params.delete('old_password')
-    account_authenticated.update(@account_params)
+    halt 400, render_message('Problems updating account.') unless account_authenticated.update(@account_params)
     render_message 'Account was updated!'
   end
 end

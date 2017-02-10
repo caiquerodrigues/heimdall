@@ -8,8 +8,12 @@ module Heimdall
 
       def decode(token)
         secret = ENV['HEIMDALL_SECRET']
-        decoded_content = JWT.decode token, secret, true, { :algorithm => 'HS256' }
-        decoded_content.first
+        begin
+          decoded_content = JWT.decode token, secret, true, { :algorithm => 'HS256' }
+          return decoded_content.first
+        rescue JWT::VerificationError, JWT::DecodeError
+          return nil
+        end
       end
     end
 

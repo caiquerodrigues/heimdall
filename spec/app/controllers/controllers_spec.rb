@@ -158,6 +158,42 @@ RSpec.describe 'Controller' do
         expect(last_response.status).to eq 200
       end
     end
+
+    context 'with invalid token' do
+      let(:account_params) do
+        {
+          account: {
+            name: 'Heimdall Updated',
+            surname: 'API Updated',
+            email: 'iamheimdalltwo@local.com',
+            password: 'bitfrost2',
+            password_confirmation: 'bitfrost2',
+            role: 'godmode'
+          }
+        }
+      end
+
+      before do
+        set_cookie 'HEIMDALL_AUTH=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvWWW'
+        put '/account/update', account_params
+      end
+
+      after do
+        clear_cookies
+      end
+
+      subject do
+        Oj.load(last_response.body)[:message]
+      end
+
+      it 'returns successful update' do
+        expect(subject).to eq 'Not authorized'
+      end
+
+      it 'returns status 401' do
+        expect(last_response.status).to eq 401
+      end
+    end
   end
 
   describe 'PUT#update_password' do
@@ -221,11 +257,44 @@ RSpec.describe 'Controller' do
       end
 
       it 'returns error' do
-        expect(subject).to eq 'Problems updating account.'
+        expect(subject).to eq 'Not authorized'
       end
 
       it 'returns status 400' do
-        expect(last_response.status).to eq 400
+        expect(last_response.status).to eq 401
+      end
+    end
+
+    context 'with invalid token' do
+      let(:account_params) do
+        {
+          account: {
+            old_password: 'badpassword',
+            password: 'bitfrost',
+            password_confirmation: 'bitfrost',
+          }
+        }
+      end
+
+      before do
+        set_cookie 'HEIMDALL_AUTH=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvWWW'
+        put '/account/update_password', account_params
+      end
+
+      after do
+        clear_cookies
+      end
+
+      subject do
+        Oj.load(last_response.body)[:message]
+      end
+
+      it 'returns successful update' do
+        expect(subject).to eq 'Not authorized'
+      end
+
+      it 'returns status 401' do
+        expect(last_response.status).to eq 401
       end
     end
   end
