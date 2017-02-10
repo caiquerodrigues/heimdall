@@ -150,12 +150,82 @@ RSpec.describe 'Controller' do
         Oj.load(last_response.body)[:message]
       end
 
-      it 'returns successful creation' do
+      it 'returns successful update' do
         expect(subject).to eq 'Account was updated!'
       end
 
       it 'returns status 200' do
         expect(last_response.status).to eq 200
+      end
+    end
+  end
+
+  describe 'PUT#update_password' do
+    let!(:heimdall) { create(:account, :iamheimdall) }
+
+    context 'with valid old password' do
+      let(:account_params) do
+        {
+          account: {
+            old_password: 'godmode',
+            password: 'bitfrost',
+            password_confirmation: 'bitfrost',
+          }
+        }
+      end
+
+      before do
+        set_cookie 'HEIMDALL_AUTH=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvKXE'
+        put '/account/update_password', account_params
+      end
+
+      after do
+        clear_cookies
+      end
+
+      subject do
+        Oj.load(last_response.body)[:message]
+      end
+
+      it 'returns successful update' do
+        expect(subject).to eq 'Account was updated!'
+      end
+
+      it 'returns status 200' do
+        expect(last_response.status).to eq 200
+      end
+    end
+
+    context 'with invalid old password' do
+      let(:account_params) do
+        {
+          account: {
+            old_password: 'badpassword',
+            password: 'bitfrost',
+            password_confirmation: 'bitfrost',
+          }
+        }
+      end
+
+      before do
+        set_cookie 'HEIMDALL_AUTH=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvKXE'
+        put '/account/update_password', account_params
+      end
+
+      after do
+        clear_cookies
+      end
+
+      subject do
+        Oj.load(last_response.body)[:message]
+      end
+
+      it 'returns error' do
+        expect(subject).to eq 'Problems updating account.'
+      end
+
+      it 'returns status 400' do
+        expect(last_response.status).to eq 400
       end
     end
   end

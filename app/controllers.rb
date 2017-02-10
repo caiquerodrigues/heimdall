@@ -1,6 +1,11 @@
 Heimdall::App.controllers  do
 
-  before except: :status do
+  before :update_account, :update_password do
+    encoded_token = @request.cookies['HEIMDALL_AUTH']
+    @token = decode(encoded_token)
+  end
+
+  before except: [:status, :update_password] do
     @account_params = payload('account').extract!('name',
                                                   'surname',
                                                   'email',
@@ -9,9 +14,10 @@ Heimdall::App.controllers  do
                                                   'role')
   end
 
-  before :update_account do
-    encoded_token = @request.cookies['HEIMDALL_AUTH']
-    @token = decode(encoded_token)
+  before :update_password do
+    @account_params = payload('account').extract!('old_password',
+                                                  'password',
+                                                  'password_confirmation')
   end
 
   get :status, map: '/status', provides: :json do
@@ -41,6 +47,16 @@ Heimdall::App.controllers  do
 
     account = Account.find_by(email: @token['email']) if @token
     halt 400, render_message('Problems updating account.') unless account.update(@account_params)
+    render_message 'Account was updated!'
+  end
+
+  put :update_password, map: '/account/update_password', provides: :json do
+    account_authenticated = Account.authenticate(@token['email'], @account_params['old_password']) if @token
+
+    halt 400, render_message('Problems updating account.') unless account_authenticated
+
+    @account_params.delete('old_password')
+    account_authenticated.update(@account_params)
     render_message 'Account was updated!'
   end
 end
