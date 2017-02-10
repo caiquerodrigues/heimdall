@@ -53,7 +53,6 @@ RSpec.describe 'Controller' do
       end
 
       it 'sets HEIMDALL_AUTH cookie' do
-        require 'pry'; binding.pry
         expect(last_response.headers['Set-Cookie'].include?('HEIMDALL_AUTH'))
       end
     end
@@ -113,6 +112,46 @@ RSpec.describe 'Controller' do
 
       it 'returns successful creation' do
         expect(subject).to eq 'Account was created!'
+      end
+
+      it 'returns status 200' do
+        expect(last_response.status).to eq 200
+      end
+    end
+  end
+
+  describe 'PUT#update_account' do
+    let!(:heimdall) { create(:account, :iamheimdall) }
+
+    context 'for all parameters' do
+      let(:account_params) do
+        {
+          account: {
+            name: 'Heimdall Updated',
+            surname: 'API Updated',
+            email: 'iamheimdalltwo@local.com',
+            password: 'bitfrost2',
+            password_confirmation: 'bitfrost2',
+            role: 'godmode'
+          }
+        }
+      end
+
+      before do
+        set_cookie 'HEIMDALL_AUTH=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvKXE'
+        put '/account/update', account_params
+      end
+
+      after do
+        clear_cookies
+      end
+
+      subject do
+        Oj.load(last_response.body)[:message]
+      end
+
+      it 'returns successful creation' do
+        expect(subject).to eq 'Account was updated!'
       end
 
       it 'returns status 200' do
