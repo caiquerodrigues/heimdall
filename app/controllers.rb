@@ -1,13 +1,12 @@
 Heimdall::App.controllers  do
 
-  before :update_account, :update_password do
-    encoded_token = @request.cookies['HEIMDALL_AUTH']
+  before :update_account, :update_password, :delete_account do
+    encoded_token = env['HEIMDALL_AUTH']
     @token = decode(encoded_token)
   end
 
-  before except: [:status, :update_password] do
+  before :create_account, :update_account do
     @account_params = payload('account').extract!('name',
-                                                  'surname',
                                                   'email',
                                                   'password',
                                                   'password_confirmation',
@@ -20,6 +19,15 @@ Heimdall::App.controllers  do
                                                   'password_confirmation')
   end
 
+  before :delete_account do
+    @account_params = payload('account').extract!('password')
+  end
+
+  before :authenticate do
+    @account_params = payload('account').extract!('email',
+                                                  'password')
+  end
+
   get :status, map: '/status', provides: :json do
     render_message 'Bifrost bridge is up and running!'
   end
@@ -28,7 +36,7 @@ Heimdall::App.controllers  do
     account_authenticated = Account.authenticate(@account_params['email'], @account_params['password'])
     halt 401, render_message('Authentication error!') unless account_authenticated
 
-    @response.set_cookie('HEIMDALL_AUTH', encode(account_authenticated.as_payload))
+    @response['HEIMDALL_AUTH'] = encode(account_authenticated.as_payload)
 
     render_message 'Authentication was successful!'
   end
@@ -61,5 +69,14 @@ Heimdall::App.controllers  do
     @account_params.delete('old_password')
     halt 400, render_message('Problems updating account.') unless account_authenticated.update(@account_params)
     render_message 'Account was updated!'
+  end
+
+  delete :delete_account, map: '/account/delete', provides: :json do
+    account_authenticated = Account.authenticate(@token['email'], @account_params['password']) if @token
+
+    halt 401, render_message('Not authorized') unless account_authenticated
+
+    halt 400, render_message('Problems deleting account.') unless account_authenticated.destroy
+    render_message 'Account was deleted!'
   end
 end

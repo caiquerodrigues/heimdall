@@ -10,7 +10,7 @@ password  = shell.ask "Tell me the password to use:", :echo => false
 
 shell.say ""
 
-account = Account.new(:email => email, :name => "Foo", :surname => "Bar", :password => password, :password_confirmation => password, :role => "admin")
+account = Account.new(:email => email, :name => "Heimdall Admin", :password => password, :password_confirmation => password, :role => "admin")
 
 if account.valid?
   account.save

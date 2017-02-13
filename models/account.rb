@@ -5,7 +5,6 @@ class Account
 
   # Fields
   field :name,             :type => String
-  field :surname,          :type => String
   field :email,            :type => String
   field :crypted_password, :type => String
   field :role,             :type => String

@@ -75,7 +75,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"account\" :\n\t{\n\t\t\"name\": \"Admin\",\n\t\t\"surname\": \"Heimdall\",\n\t\t\"email\": \"admin@heimdall.local\",\n\t\t\"password\": \"123456\",\n\t\t\"password_confirmation\": \"123456\",\n\t\t\"role\": \"admin\"\n\t}\n}"
+					"raw": "{\n\t\"account\" :\n\t{\n\t\t\"name\": \"Admin\",\n\t\t\"email\": \"admin@heimdall.local\",\n\t\t\"password\": \"123456\",\n\t\t\"password_confirmation\": \"123456\",\n\t\t\"role\": \"admin\"\n\t}\n}"
 				},
 				"description": "User creation through API using local Heimdall."
 			},

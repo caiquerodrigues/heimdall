@@ -1,8 +1,7 @@
 FactoryGirl.define do
   factory :account do
     trait :full do
-      name 'Admin'
-      surname 'Heimdall'
+      name 'Heimdall'
       sequence(:email){ |n| "admin#{n}@heimdall.local" }
       password 'good'
       password_confirmation 'good'
@@ -11,7 +10,6 @@ FactoryGirl.define do
 
     trait :iamheimdall do
       name 'Heimdall'
-      surname 'God'
       email 'iamheimdall@local.com'
       password 'godmode'
       password_confirmation 'godmode'

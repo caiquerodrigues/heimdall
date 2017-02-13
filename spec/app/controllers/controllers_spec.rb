@@ -8,10 +8,6 @@ RSpec.describe 'Controller' do
       get '/status'
     end
 
-    after do
-      clear_cookies
-    end
-
     subject do
       Oj.load(last_response.body)[:message]
     end
@@ -53,7 +49,7 @@ RSpec.describe 'Controller' do
       end
 
       it 'sets HEIMDALL_AUTH cookie' do
-        expect(last_response.headers['Set-Cookie'].include?('HEIMDALL_AUTH'))
+        expect(last_response.headers.include?('HEIMDALL_AUTH'))
       end
     end
   end
@@ -93,7 +89,6 @@ RSpec.describe 'Controller' do
         {
           account: {
             name: 'Heimdall',
-            surname: 'API',
             email: 'iamheimdall@local.com',
             password: 'bitfrost',
             password_confirmation: 'bitfrost',
@@ -128,7 +123,6 @@ RSpec.describe 'Controller' do
         {
           account: {
             name: 'Heimdall Updated',
-            surname: 'API Updated',
             email: 'iamheimdalltwo@local.com',
             password: 'bitfrost2',
             password_confirmation: 'bitfrost2',
@@ -138,12 +132,8 @@ RSpec.describe 'Controller' do
       end
 
       before do
-        set_cookie 'HEIMDALL_AUTH=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvKXE'
+        env('HEIMDALL_AUTH', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvKXE')
         put '/account/update', account_params
-      end
-
-      after do
-        clear_cookies
       end
 
       subject do
@@ -164,7 +154,6 @@ RSpec.describe 'Controller' do
         {
           account: {
             name: 'Heimdall Updated',
-            surname: 'API Updated',
             email: 'iamheimdalltwo@local.com',
             password: 'bitfrost2',
             password_confirmation: 'bitfrost2',
@@ -174,12 +163,8 @@ RSpec.describe 'Controller' do
       end
 
       before do
-        set_cookie 'HEIMDALL_AUTH=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvWWW'
+        env('HEIMDALL_AUTH', "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvWWW")
         put '/account/update', account_params
-      end
-
-      after do
-        clear_cookies
       end
 
       subject do
@@ -211,12 +196,8 @@ RSpec.describe 'Controller' do
       end
 
       before do
-        set_cookie 'HEIMDALL_AUTH=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvKXE'
+        env('HEIMDALL_AUTH', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvKXE')
         put '/account/update_password', account_params
-      end
-
-      after do
-        clear_cookies
       end
 
       subject do
@@ -244,12 +225,8 @@ RSpec.describe 'Controller' do
       end
 
       before do
-        set_cookie 'HEIMDALL_AUTH=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvKXE'
+        env('HEIMDALL_AUTH', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvKXE')
         put '/account/update_password', account_params
-      end
-
-      after do
-        clear_cookies
       end
 
       subject do
@@ -260,7 +237,7 @@ RSpec.describe 'Controller' do
         expect(subject).to eq 'Not authorized'
       end
 
-      it 'returns status 400' do
+      it 'returns status 401' do
         expect(last_response.status).to eq 401
       end
     end
@@ -277,12 +254,93 @@ RSpec.describe 'Controller' do
       end
 
       before do
-        set_cookie 'HEIMDALL_AUTH=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvWWW'
+        env('HEIMDALL_AUTH', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvWWW')
         put '/account/update_password', account_params
       end
 
-      after do
-        clear_cookies
+      subject do
+        Oj.load(last_response.body)[:message]
+      end
+
+      it 'returns successful update' do
+        expect(subject).to eq 'Not authorized'
+      end
+
+      it 'returns status 401' do
+        expect(last_response.status).to eq 401
+      end
+    end
+  end
+
+  describe 'DELETE#delete_account' do
+    let!(:heimdall) { create(:account, :iamheimdall) }
+
+    context 'with valid password' do
+      let(:account_params) do
+        {
+          account: {
+            password: 'godmode',
+          }
+        }
+      end
+
+      before do
+        env('HEIMDALL_AUTH', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvKXE')
+        delete '/account/delete', account_params
+      end
+
+      subject do
+        Oj.load(last_response.body)[:message]
+      end
+
+      it 'returns successful delete' do
+        expect(subject).to eq 'Account was deleted!'
+      end
+
+      it 'returns status 200' do
+        expect(last_response.status).to eq 200
+      end
+    end
+
+    context 'with invalid old password' do
+      let(:account_params) do
+        {
+          account: {
+            password: 'badpassword'
+          }
+        }
+      end
+
+      before do
+        env('HEIMDALL_AUTH', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvKXE')
+        delete '/account/delete', account_params
+      end
+
+      subject do
+        Oj.load(last_response.body)[:message]
+      end
+
+      it 'returns error' do
+        expect(subject).to eq 'Not authorized'
+      end
+
+      it 'returns status 401' do
+        expect(last_response.status).to eq 401
+      end
+    end
+
+    context 'with invalid token' do
+      let(:account_params) do
+        {
+          account: {
+            password: 'badpassword'
+          }
+        }
+      end
+
+      before do
+        env('HEIMDALL_AUTH', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlhbWhlaW1kYWxsQGxvY2FsLmNvbSIsImFwcCI6ImhlaW1kYWxsIn0.st8GvZSwVLdOXqE3qMREpqPuCwNAn8mwN6SBJFHvWWW')
+        delete '/account/delete', account_params
       end
 
       subject do
